@@ -7,7 +7,11 @@ def server(log_buffer=sys.stderr):
     address = ('127.0.0.1', 10000)
     # TODO: Replace the following line with your code which will instantiate
     #       a TCP socket with IPv4 Addressing, call the socket you make 'sock'
-    sock = None
+    sock = socket.socket(
+        socket.AF_INET,
+        socket.SOCK_STREAM,
+        socket.IPPROTO_TCP
+        )
     # TODO: You may find that if you repeatedly run the server script it fails,
     #       claiming that the port is already used.  You can set an option on
     #       your socket that will fix this problem. We DID NOT talk about this
@@ -20,7 +24,8 @@ def server(log_buffer=sys.stderr):
 
     # TODO: bind your new sock 'sock' to the address above and begin to listen
     #       for incoming connections
-
+    sock.bind(address)
+    sock.listen(1)
     try:
         # the outer loop controls the creation of new connection sockets. The
         # server will handle each incoming connection one at a time.
@@ -32,7 +37,7 @@ def server(log_buffer=sys.stderr):
             #       the client so we can report it below.  Replace the
             #       following line with your code. It is only here to prevent
             #       syntax errors
-            addr = ('bar', 'baz')
+            conn, addr = sock.accept()
             try:
                 print('connection - {0}:{1}'.format(*addr), file=log_buffer)
 
@@ -46,18 +51,24 @@ def server(log_buffer=sys.stderr):
                     #       a placeholder to prevent an error in string
                     #       formatting
                     data = b''
+                    msg = conn.recv(16)
+                    data += msg
                     print('received "{0}"'.format(data.decode('utf8')))
                     # TODO: Send the data you received back to the client, log
                     # the fact using the print statement here.  It will help in
                     # debugging problems.
+                    conn.sendall(msg)
                     print('sent "{0}"'.format(data.decode('utf8')))
                     # TODO: Check here to see if the message you've received is
                     # complete.  If it is, break out of this inner loop.
+                    if not msg:
+                        break
 
             finally:
                 # TODO: When the inner loop exits, this 'finally' clause will
                 #       be hit. Use that opportunity to close the socket you
                 #       created above when a client connected.
+                conn.close()
                 print(
                     'echo complete, client connection closed', file=log_buffer
                 )
@@ -67,8 +78,9 @@ def server(log_buffer=sys.stderr):
         #       close the server socket and exit from the server function.
         #       Replace the call to `pass` below, which is only there to
         #       prevent syntax problems
-        pass
+        sock.close()
         print('quitting echo server', file=log_buffer)
+        return
 
 
 if __name__ == '__main__':
