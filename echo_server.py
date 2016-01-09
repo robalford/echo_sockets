@@ -18,7 +18,7 @@ def server(log_buffer=sys.stderr):
     #       in class. Find the correct option by reading the very end of the
     #       socket library documentation:
     #       http://docs.python.org/3/library/socket.html#example
-
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # log that we are building a server
     print("making a server on {0}:{1}".format(*address), file=log_buffer)
 
