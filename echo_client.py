@@ -13,7 +13,7 @@ def client(msg, log_buffer=sys.stderr):
         )
     print('connecting to {0} port {1}'.format(*server_address), file=log_buffer)
     # TODO: connect your socket to the server here.
-    sock.connect(*server_address)
+    sock.connect(server_address)
     # you can use this as a place to accumulate the entire message echoed back
     # from the server
     received_message = ''
@@ -32,14 +32,13 @@ def client(msg, log_buffer=sys.stderr):
         #       Log each chunk you receive.  Use the print statement below to
         #       do it. This will help in debugging problems
         buffsize = 16
-        chunk = ''
         done = False
         while not done:
             chunk = sock.recv(buffsize)
+            received_message += chunk.decode('utf8')
+            print('received "{0}"'.format(chunk.decode('utf8')), file=log_buffer)
             if len(chunk) < buffsize:
                 done = True
-            received_message += chunk
-            print('received "{0}"'.format(chunk.decode('utf8')), file=log_buffer)
     finally:
         # TODO: after you break out of the loop receiving echoed chunks from
         #       the server you will want to close your client socket.
