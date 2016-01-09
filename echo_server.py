@@ -50,15 +50,13 @@ def server(log_buffer=sys.stderr):
                     #       following line with your code.  It's only here as
                     #       a placeholder to prevent an error in string
                     #       formatting
-                    data = b''
-                    msg = conn.recv(16)
-                    if msg:
-                        data += msg
+                    data = conn.recv(16)
+                    if data:
                         print('received "{0}"'.format(data.decode('utf8')))
                     # TODO: Send the data you received back to the client, log
                     # the fact using the print statement here.  It will help in
                     # debugging problems.
-                        conn.sendall(msg)
+                        conn.sendall(data)
                         print('sent "{0}"'.format(data.decode('utf8')))
                     # TODO: Check here to see if the message you've received is
                     # complete.  If it is, break out of this inner loop.
